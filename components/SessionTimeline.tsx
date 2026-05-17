@@ -163,6 +163,43 @@ function LessonDetails({
               {lesson.reviewNote}
             </p>
           )}
+          {lesson.productiveStrugglePlan && (
+            <div className="rounded-md border border-blue-100 bg-blue-50 p-3">
+              <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-blue-900">
+                Next lesson productive struggle plan
+              </p>
+              <p className="whitespace-pre-wrap text-sm text-blue-950">
+                {lesson.productiveStrugglePlan}
+              </p>
+            </div>
+          )}
+          {lesson.bookRecommendations &&
+            lesson.bookRecommendations.length > 0 && (
+              <div className="rounded-md border border-emerald-200 bg-emerald-50 p-3">
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-emerald-900">
+                  Library matches
+                </p>
+                <ol className="space-y-2">
+                  {lesson.bookRecommendations.map((book) => (
+                    <li key={book.bookId}>
+                      <div className="flex flex-wrap items-baseline justify-between gap-2">
+                        <span className="font-semibold">
+                          {book.title}
+                        </span>
+                        <span className="text-xs font-semibold text-emerald-800">
+                          {book.matchPercent}% match
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-600">by {book.author}</p>
+                      <p className="mt-1 text-sm">{book.suggestion}</p>
+                      <p className="mt-1 text-xs text-emerald-900">
+                        {book.productiveStruggleNote}
+                      </p>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            )}
           {onUpdateLesson && (
             <button
               type="button"

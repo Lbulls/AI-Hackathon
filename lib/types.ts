@@ -49,6 +49,8 @@ export type LessonOutput = {
   miniStory: string;
   targetWords: string[];
   reviewNote: string;
+  productiveStrugglePlan?: string;
+  bookRecommendations?: BookRecommendation[];
   reasoning?: Reasoning;
   sections?: Record<SectionHeader, string>;
 };
@@ -79,6 +81,27 @@ export type PriorLessonContext = {
 export type GenerateRequest = TeacherInput & {
   priorSessions?: PriorSession[];
   priorLesson?: PriorLessonContext;
+};
+
+export type LibraryBook = {
+  id: string;
+  title: string;
+  author: string;
+  skills: string[];
+  vocabulary: string[];
+  themes: string[];
+};
+
+export type BookRecommendation = {
+  bookId: string;
+  title: string;
+  author: string;
+  matchPercent: number;
+  matchedSkills: string[];
+  matchedVocabulary: string[];
+  matchedThemes: string[];
+  productiveStruggleNote: string;
+  suggestion: string;
 };
 
 export type StreamEvent =

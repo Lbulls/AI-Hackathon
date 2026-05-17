@@ -98,6 +98,28 @@ function runningRecordLines(student: Student, sessions: Session[]): PdfLine[] {
       pushWrapped(lines, "Mini-story", session.lesson.miniStory);
       pushWrapped(lines, "Target words", session.lesson.targetWords.join(", "));
       pushWrapped(lines, "Teacher review note", session.lesson.reviewNote);
+      if (session.lesson.productiveStrugglePlan) {
+        pushWrapped(
+          lines,
+          "Next lesson productive struggle plan",
+          session.lesson.productiveStrugglePlan
+        );
+      }
+      if (
+        session.lesson.bookRecommendations &&
+        session.lesson.bookRecommendations.length > 0
+      ) {
+        lines.push({ text: "Library Book Matches", size: 11, bold: true, gapBefore: 8 });
+        session.lesson.bookRecommendations.forEach((book, bookIndex) => {
+          pushWrapped(
+            lines,
+            `${bookIndex + 1}. ${book.title} (${book.matchPercent}% match)`,
+            `by ${book.author}`
+          );
+          pushWrapped(lines, "Suggestion", book.suggestion);
+          pushWrapped(lines, "Productive struggle", book.productiveStruggleNote);
+        });
+      }
     } else {
       lines.push({ text: "Drafted Lesson Materials: Not generated", size: 10, bold: true });
     }

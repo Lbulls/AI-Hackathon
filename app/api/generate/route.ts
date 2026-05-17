@@ -1,6 +1,10 @@
 import Anthropic from "@anthropic-ai/sdk";
 import mammoth from "mammoth";
 import { NextResponse } from "next/server";
+import {
+  buildProductiveStrugglePlan,
+  recommendBooksForLesson,
+} from "@/lib/book-library";
 import { buildUserPrompt, SYSTEM_PROMPT } from "@/lib/prompt";
 import { fallbackOutput } from "@/lib/fallback-output";
 import { parseStrict, validateLesson } from "@/lib/parse";
@@ -208,7 +212,19 @@ export async function POST(
         withFallback("model output did not contain the required reasoning and lesson sections")
       );
     }
-    return NextResponse.json({ output, usedFallback: false });
+    const bookRecommendations = recommendBooksForLesson(input, output);
+    return NextResponse.json({
+      output: {
+        ...output,
+        productiveStrugglePlan: buildProductiveStrugglePlan(
+          input,
+          output,
+          bookRecommendations
+        ),
+        bookRecommendations,
+      },
+      usedFallback: false,
+    });
   } catch (err) {
     const reason = err instanceof Error ? err.message : "unknown error";
     return NextResponse.json(withFallback(`Anthropic call failed: ${reason}`));

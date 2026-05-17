@@ -56,6 +56,38 @@ export function LessonCards({ output }: { output: LessonOutput }) {
       <Card title="Teacher Review Note">
         <p className="whitespace-pre-wrap leading-6">{output.reviewNote}</p>
       </Card>
+
+      {output.productiveStrugglePlan && (
+        <Card title="Next Lesson Productive Struggle Plan" className="md:col-span-2">
+          <p className="whitespace-pre-wrap leading-6">
+            {output.productiveStrugglePlan}
+          </p>
+        </Card>
+      )}
+
+      {output.bookRecommendations && output.bookRecommendations.length > 0 && (
+        <Card title="Top Library Matches" className="md:col-span-2">
+          <ol className="space-y-4">
+            {output.bookRecommendations.map((book) => (
+              <li key={book.bookId}>
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <div>
+                    <p className="font-semibold text-zinc-900">{book.title}</p>
+                    <p className="text-xs text-zinc-500">by {book.author}</p>
+                  </div>
+                  <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
+                    {book.matchPercent}% match
+                  </span>
+                </div>
+                <p className="mt-2 leading-6">{book.suggestion}</p>
+                <p className="mt-1 text-xs leading-5 text-emerald-900">
+                  {book.productiveStruggleNote}
+                </p>
+              </li>
+            ))}
+          </ol>
+        </Card>
+      )}
     </div>
   );
 }
