@@ -27,34 +27,34 @@ export function PastLessons({
     mostRecent.output.needSummary;
 
   return (
-    <section className="rounded-lg border border-emerald-200 bg-emerald-50 p-4">
+    <section className="rounded-lg border border-sage-200 bg-sage-50 p-4">
       <div className="flex items-baseline justify-between">
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-emerald-900">
+        <h2 className="text-xs font-semibold uppercase tracking-wide text-sage-900">
           Past lessons for {mostRecent.input.studentName} ({lessons.length})
         </h2>
-        <span className="text-xs text-emerald-700">
+        <span className="text-xs text-sage-700">
           Most recent will be sent as context →
         </span>
       </div>
 
-      <div className="mt-3 text-sm text-emerald-900">
+      <div className="mt-3 text-sm text-sage-900">
         <div className="font-medium">
           {formatDate(mostRecent.timestamp)} — focus:{" "}
-          <code className="rounded bg-emerald-100 px-1 py-0.5 font-mono text-xs">
+          <code className="rounded bg-sage-100 px-1 py-0.5 font-mono text-xs">
             {firstGoal}
           </code>
         </div>
       </div>
 
       <details className="mt-3">
-        <summary className="cursor-pointer text-xs font-medium text-emerald-800 hover:text-emerald-950">
+        <summary className="cursor-pointer text-xs font-medium text-sage-800 hover:text-sage-950">
           Show all {lessons.length}
         </summary>
         <ul className="mt-2 space-y-1.5">
           {lessons.map((l) => (
             <li
               key={l.id}
-              className="flex items-center justify-between gap-2 text-xs text-emerald-900"
+              className="flex items-center justify-between gap-2 text-xs text-sage-900"
             >
               <button
                 type="button"
@@ -71,7 +71,7 @@ export function PastLessons({
                   deleteLesson(l.id);
                   onDelete();
                 }}
-                className="rounded px-1.5 py-0.5 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-950"
+                className="rounded px-1.5 py-0.5 text-sage-700 hover:bg-sage-100 hover:text-sage-950"
                 aria-label={`Delete lesson from ${formatDate(l.timestamp)}`}
               >
                 Delete

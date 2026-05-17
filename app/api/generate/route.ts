@@ -18,6 +18,15 @@ import type {
 export const runtime = "nodejs";
 
 const MODEL = "claude-sonnet-4-6";
+const MAX_TOKENS = 16000;
+
+const SYSTEM_BLOCKS = [
+  {
+    type: "text" as const,
+    text: SYSTEM_PROMPT,
+    cache_control: { type: "ephemeral" as const },
+  },
+];
 
 type FilePayload = {
   block?: Anthropic.ImageBlockParam | Anthropic.DocumentBlockParam;
@@ -106,16 +115,32 @@ function extractText(message: Anthropic.Message): string {
     .join("\n");
 }
 
+async function callClaude(
+  client: Anthropic,
+  messages: Anthropic.MessageParam[]
+): Promise<Anthropic.Message> {
+  const message = await client.messages.create({
+    model: MODEL,
+    max_tokens: MAX_TOKENS,
+    thinking: { type: "adaptive" },
+    output_config: { effort: "high" },
+    system: SYSTEM_BLOCKS,
+    messages,
+  });
+  const u = message.usage;
+  console.log(
+    `[generate] usage — input:${u.input_tokens} output:${u.output_tokens} cache_read:${u.cache_read_input_tokens ?? 0} cache_create:${u.cache_creation_input_tokens ?? 0}`,
+  );
+  return message;
+}
+
 async function generateLesson(
   client: Anthropic,
   userContent: Anthropic.ContentBlockParam[]
 ): Promise<LessonOutput | null> {
-  const firstMessage = await client.messages.create({
-    model: MODEL,
-    max_tokens: 4096,
-    system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: userContent }],
-  });
+  const firstMessage = await callClaude(client, [
+    { role: "user", content: userContent },
+  ]);
 
   const firstParsed = parseStrict(extractText(firstMessage));
   if (!firstParsed) return null;
@@ -130,16 +155,11 @@ async function generateLesson(
     "Revise the response to fix them. Return the same two-part format with the fenced JSON reasoning block followed by the nine markdown sections.",
   ].join("\n");
 
-  const retryMessage = await client.messages.create({
-    model: MODEL,
-    max_tokens: 4096,
-    system: SYSTEM_PROMPT,
-    messages: [
-      { role: "user", content: userContent },
-      { role: "assistant", content: firstMessage.content },
-      { role: "user", content: revisionPrompt },
-    ],
-  });
+  const retryMessage = await callClaude(client, [
+    { role: "user", content: userContent },
+    { role: "assistant", content: firstMessage.content },
+    { role: "user", content: revisionPrompt },
+  ]);
 
   return parseStrict(extractText(retryMessage)) ?? firstParsed;
 }

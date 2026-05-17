@@ -1,1 +1,39 @@
 @import "tailwindcss";
+
+@theme {
+  /* Warm the entire zinc palette so the app reads editorial, not corporate.
+     Every existing `bg-zinc-*` / `text-zinc-*` / `border-zinc-*` class shifts
+     with no component-level changes required. */
+  --color-zinc-50: #faf6ee;
+  --color-zinc-100: #f1ecde;
+  --color-zinc-200: #e5ddc9;
+  --color-zinc-300: #c8bea7;
+  --color-zinc-400: #9c9381;
+  --color-zinc-500: #6f685a;
+  --color-zinc-600: #4f4a40;
+  --color-zinc-700: #3a3630;
+  --color-zinc-800: #25221e;
+  --color-zinc-900: #1a1814;
+
+  /* Terracotta — brand accent, primary actions, hover states. */
+  --color-clay-50: #faeee7;
+  --color-clay-100: #f2d7c8;
+  --color-clay-200: #e6b9a1;
+  --color-clay-500: #b5523a;
+  --color-clay-600: #9a4329;
+  --color-clay-700: #7e351f;
+
+  /* Sage — quieter green for the past-lessons panel (replaces cold emerald). */
+  --color-sage-50: #ecefe2;
+  --color-sage-100: #dbe0c9;
+  --color-sage-200: #c5cdaf;
+  --color-sage-500: #6e7e55;
+  --color-sage-700: #4b5638;
+  --color-sage-800: #3a4329;
+  --color-sage-900: #2e351f;
+  --color-sage-950: #1e2214;
+
+  /* Typography. Inter for UI/body, Fraunces (serif) for display + reading material. */
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, serif;
+}
