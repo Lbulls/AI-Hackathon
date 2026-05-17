@@ -1,75 +1,191 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { NextResponse } from "next/server";
 import { buildUserPrompt, SYSTEM_PROMPT } from "@/lib/prompt";
 import { fallbackOutput } from "@/lib/fallback-output";
-import type { GenerateResponse, LessonOutput, TeacherInput } from "@/lib/types";
+import { parseStrict, validateLesson } from "@/lib/parse";
+import type {
+  GenerateRequest,
+  LessonOutput,
+  StreamEvent,
+} from "@/lib/types";
 
 export const runtime = "nodejs";
 
 const MODEL = "claude-sonnet-4-6";
+const MAX_TOKENS = 16000;
 
-function withFallback(reason: string): GenerateResponse {
+function ndjson(event: StreamEvent): string {
+  return JSON.stringify(event) + "\n";
+}
+
+function ndjsonResponse(stream: ReadableStream<Uint8Array>): Response {
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "application/x-ndjson; charset=utf-8",
+      "Cache-Control": "no-store, no-transform",
+      "X-Accel-Buffering": "no",
+    },
+  });
+}
+
+function singleEventResponse(event: StreamEvent): Response {
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream<Uint8Array>({
+    start(controller) {
+      controller.enqueue(encoder.encode(ndjson(event)));
+      controller.close();
+    },
+  });
+  return ndjsonResponse(stream);
+}
+
+function fallbackResponse(reason: string): Response {
   console.warn(`[generate] using fallback: ${reason}`);
-  return { output: fallbackOutput, usedFallback: true };
+  return singleEventResponse({
+    t: "final",
+    output: fallbackOutput,
+    usedFallback: true,
+  });
 }
 
-function parseLessonOutput(raw: string): LessonOutput | null {
-  const trimmed = raw.trim().replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
-  const start = trimmed.indexOf("{");
-  const end = trimmed.lastIndexOf("}");
-  if (start === -1 || end === -1) return null;
-  try {
-    const obj = JSON.parse(trimmed.slice(start, end + 1));
+async function runAnthropic(
+  client: Anthropic,
+  messages: Anthropic.MessageParam[],
+  onTextDelta: (chunk: string) => void,
+): Promise<Anthropic.Message> {
+  const stream = client.messages.stream({
+    model: MODEL,
+    max_tokens: MAX_TOKENS,
+    thinking: { type: "adaptive" },
+    output_config: { effort: "high" },
+    system: [
+      {
+        type: "text",
+        text: SYSTEM_PROMPT,
+        cache_control: { type: "ephemeral" },
+      },
+    ],
+    messages,
+  });
+
+  for await (const event of stream) {
     if (
-      typeof obj.needSummary === "string" &&
-      typeof obj.teachingMove === "string" &&
-      typeof obj.miniStory === "string" &&
-      Array.isArray(obj.targetWords) &&
-      obj.targetWords.every((w: unknown) => typeof w === "string") &&
-      typeof obj.reviewNote === "string"
+      event.type === "content_block_delta" &&
+      event.delta.type === "text_delta"
     ) {
-      return obj as LessonOutput;
+      onTextDelta(event.delta.text);
     }
-    return null;
-  } catch {
-    return null;
   }
+
+  const finalMessage = await stream.finalMessage();
+  const u = finalMessage.usage;
+  console.log(
+    `[generate] usage — input:${u.input_tokens} output:${u.output_tokens} cache_read:${u.cache_read_input_tokens ?? 0} cache_create:${u.cache_creation_input_tokens ?? 0}`,
+  );
+  return finalMessage;
 }
 
-export async function POST(request: Request): Promise<NextResponse<GenerateResponse>> {
+function extractText(message: Anthropic.Message): string {
+  return message.content
+    .filter((b): b is Anthropic.TextBlock => b.type === "text")
+    .map((b) => b.text)
+    .join("\n");
+}
+
+export async function POST(request: Request): Promise<Response> {
   if (!process.env.ANTHROPIC_API_KEY) {
-    return NextResponse.json(withFallback("ANTHROPIC_API_KEY not set"));
+    return fallbackResponse("ANTHROPIC_API_KEY not set");
   }
 
-  let input: TeacherInput;
+  let input: GenerateRequest;
   try {
-    input = (await request.json()) as TeacherInput;
+    input = (await request.json()) as GenerateRequest;
   } catch {
-    return NextResponse.json(withFallback("request body was not valid JSON"));
+    return fallbackResponse("request body was not valid JSON");
   }
 
+  const { priorLesson, ...teacherInput } = input;
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  const userPrompt = buildUserPrompt(teacherInput, priorLesson);
+  const encoder = new TextEncoder();
 
-  try {
-    const message = await client.messages.create({
-      model: MODEL,
-      max_tokens: 1024,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: "user", content: buildUserPrompt(input) }],
-    });
+  const stream = new ReadableStream<Uint8Array>({
+    async start(controller) {
+      const send = (event: StreamEvent) => {
+        controller.enqueue(encoder.encode(ndjson(event)));
+      };
+      const sendText = (chunk: string) => send({ t: "text", v: chunk });
 
-    const text = message.content
-      .filter((block): block is Anthropic.TextBlock => block.type === "text")
-      .map((block) => block.text)
-      .join("\n");
+      try {
+        const firstMessage = await runAnthropic(
+          client,
+          [{ role: "user", content: userPrompt }],
+          sendText,
+        );
+        const firstText = extractText(firstMessage);
+        const firstParsed = parseStrict(firstText);
 
-    const parsed = parseLessonOutput(text);
-    if (!parsed) {
-      return NextResponse.json(withFallback("model output did not parse as LessonOutput"));
-    }
-    return NextResponse.json({ output: parsed, usedFallback: false });
-  } catch (err) {
-    const reason = err instanceof Error ? err.message : "unknown error";
-    return NextResponse.json(withFallback(`Anthropic call failed: ${reason}`));
-  }
+        if (!firstParsed) {
+          send({
+            t: "final",
+            output: fallbackOutput,
+            usedFallback: true,
+          });
+          controller.close();
+          console.warn(
+            "[generate] using fallback: model output did not contain reasoning JSON + all required sections",
+          );
+          return;
+        }
+
+        const violations = validateLesson(firstParsed);
+        if (violations.length === 0) {
+          send({ t: "final", output: firstParsed, usedFallback: false });
+          controller.close();
+          return;
+        }
+
+        console.warn(
+          `[generate] retrying once — violations: ${violations.join(" | ")}`,
+        );
+
+        const revisionPrompt = [
+          `Your previous response had these issues:`,
+          ...violations.map((v) => `- ${v}`),
+          ``,
+          `Revise your response to fix them. Return the same TWO-part format: the \`\`\`json reasoning block, then the nine markdown sections. Update any sections (especially "Decodable Story", "Mini Lesson", "Word Work") that need to change to satisfy the constraints.`,
+        ].join("\n");
+
+        const retryMessage = await runAnthropic(
+          client,
+          [
+            { role: "user", content: userPrompt },
+            { role: "assistant", content: firstMessage.content },
+            { role: "user", content: revisionPrompt },
+          ],
+          () => {
+            // Retry response is not streamed to the client — it would be
+            // confusing to see content appear-then-replace. The final event
+            // below carries the revised output.
+          },
+        );
+
+        const retryText = extractText(retryMessage);
+        const retryParsed = parseStrict(retryText);
+        const finalOutput: LessonOutput = retryParsed ?? firstParsed;
+        send({ t: "final", output: finalOutput, usedFallback: false });
+        controller.close();
+      } catch (err) {
+        const reason = err instanceof Error ? err.message : "unknown error";
+        console.warn(`[generate] anthropic call failed: ${reason}`);
+        send({
+          t: "final",
+          output: fallbackOutput,
+          usedFallback: true,
+        });
+        controller.close();
+      }
+    },
+  });
+
+  return ndjsonResponse(stream);
 }
