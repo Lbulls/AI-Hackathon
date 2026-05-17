@@ -1,53 +1,119 @@
-import type { GenerateRequest } from "./types";
+import { EXAMPLES_BLOCK } from "./prompt-examples";
+import type { GenerateRequest, PriorLessonContext } from "./types";
 
-export const SYSTEM_PROMPT = `You are a literacy coach preparing draft materials for a credentialed early-literacy teacher. Your work is inspired by Reading Recovery practices but is not a certified intervention. The teacher will review and adapt everything you produce.
+export const SECTION_HEADERS = [
+  "What I Noticed",
+  "Likely Reading Processes",
+  "Recommended Instructional Focus",
+  "Lesson Constraints",
+  "Mini Lesson",
+  "Decodable Story",
+  "Teacher Prompts",
+  "Word Work",
+  "Writing Extension",
+] as const;
 
-Your job is to take the teacher's notes about ONE student and return a small set of lesson-prep materials in strict JSON. Be specific to this student — never produce generic advice that could apply to any child.
+export type SectionHeader = (typeof SECTION_HEADERS)[number];
 
-Hard rules for the mini-story:
-- 4 to 8 short sentences, vocabulary appropriate to the stated grade.
-- Must use at least 4 of the words you list in "targetWords".
-- Must reference at least one of the student's interests by name.
-- Story should make sense as a whole — the teacher will read it with the student.
+export const SYSTEM_PROMPT = `You are an expert early literacy instructional reasoning engine inspired by Reading Recovery, structured literacy, and cognitive apprenticeship models of teaching.
 
-Output JSON shape (no other keys, no markdown, no commentary):
+Your job is to translate expert teacher observation notes into targeted, teacher-facing literacy preparation materials.
+
+Follow this reasoning pipeline before generating materials:
+1. Extract directly observable reading behaviors from the teacher notes.
+2. Infer likely reading processes with uncertainty and restraint.
+3. Select only 1-2 high-leverage instructional goals.
+4. Build lesson constraints that keep the lesson focused and developmentally appropriate.
+5. Generate personalized materials that fit the student, the target skill, and the teacher's context.
+
+The teacher is the expert observer. The AI is the instructional synthesizer.
+
+Avoid generic advice, overdiagnosis, excessive jargon, and random stories disconnected from the teacher notes.
+
+Return the response in TWO parts:
+
+PART 1: one fenced json code block with:
 {
-  "needSummary": string,    // 1-2 sentences naming this student's specific next need
-  "teachingMove": string,   // one concrete teaching move the teacher could try in the next session
-  "miniStory": string,      // 4-8 sentences, see rules above
-  "targetWords": string[],  // 6-10 words from the target pattern, all appearing in or appropriate to the story
-  "reviewNote": string      // 1-3 short bullets, separated by newlines, listing things the teacher should verify before using
+  "observations": [{"behavior": "...", "evidence": "..."}],
+  "reading_processes": [{"process": "...", "confidence": 0.0, "reasoning": "..."}],
+  "instructional_goals": [{"goal": "...", "why": "..."}],
+  "lesson_constraints": {
+    "target_phonics_patterns": ["pattern with target words in parens, e.g. short-i CVC (sit, big, pig, hid, win, pin)"],
+    "sentence_complexity": "...",
+    "vocabulary_control": "...",
+    "picture_predictability": "...",
+    "recommended_prompting_style": ["..."],
+    "targeted_reading_behaviors": ["..."],
+    "engagement_hooks": ["..."]
+  }
 }
 
-Return ONLY the JSON object. No prose before or after. No markdown fences.`;
+PART 2: these exact markdown sections, in this exact order:
+# What I Noticed
+# Likely Reading Processes
+# Recommended Instructional Focus
+# Lesson Constraints
+# Mini Lesson
+# Decodable Story
+# Teacher Prompts
+# Word Work
+# Writing Extension
 
-export function buildUserPrompt(input: GenerateRequest): string {
-  const lines = [
+Hard rules:
+- Use at least 4 target words in the Decodable Story.
+- Keep story sentences short and grade-appropriate.
+- Reference at least one student interest by name.
+- Keep the teacher in control: this is draft material for expert review.
+
+${EXAMPLES_BLOCK}`;
+
+export function buildUserPrompt(
+  input: GenerateRequest,
+  priorLesson?: PriorLessonContext
+): string {
+  const priorLessonBlock = priorLesson
+    ? [
+        "",
+        `PRIOR LESSON CONTEXT (${priorLesson.date}):`,
+        `- Goals worked on: ${priorLesson.goals.join("; ")}`,
+        `- Target patterns used: ${priorLesson.targetPatterns.join("; ")}`,
+        `- Mini lesson excerpt: ${priorLesson.miniLessonExcerpt}`,
+        "Build on this work. Do not repeat the exact same teaching move.",
+      ]
+    : [];
+
+  const priorSessionsBlock =
+    input.priorSessions && input.priorSessions.length > 0
+      ? [
+          "",
+          "RUNNING RECORD CONTEXT (most recent first):",
+          ...input.priorSessions.map(
+            (session) =>
+              `- ${session.date}: focus ${session.targetPattern || "none listed"}. Need/context: ${session.needSummary}`
+          ),
+          "Use this running-record context so the recommendation feels like a coherent next step.",
+        ]
+      : [];
+
+  return [
+    "Teacher observation notes for ONE student:",
+    "",
     `Student name: ${input.studentName}`,
     `Grade: ${input.grade}`,
-    `Strengths the teacher has observed today: ${input.strengths}`,
-    `Struggles the teacher has observed today: ${input.struggles}`,
-    `Target sound or pattern for this week: ${input.targetPattern}`,
+    `Skills being targeted: ${input.targetPattern}`,
     `Student interests: ${input.interests}`,
-    `Additional teacher notes: ${input.notes}`,
-  ];
-
-  if (input.priorSessions && input.priorSessions.length > 0) {
-    lines.push("", "Context from previous sessions (most recent first):");
-    for (const ps of input.priorSessions) {
-      lines.push(
-        `- ${ps.date} — focus: ${ps.targetPattern}. Need: ${ps.needSummary}`
-      );
-    }
-    lines.push(
-      "",
-      "Use this prior context to make today's recommendation feel like a coherent next step, not a one-off."
-    );
-  }
-
-  lines.push(
     "",
-    "Draft the lesson materials now. Return only valid JSON. No prose, no markdown fences."
-  );
-  return lines.join("\n");
+    "Strengths observed:",
+    input.strengths || "Not specified",
+    "",
+    "Struggles observed:",
+    input.struggles || "Not specified",
+    "",
+    "Teacher notes:",
+    input.notes || "Not specified",
+    ...priorSessionsBlock,
+    ...priorLessonBlock,
+    "",
+    "Generate the full two-part response now.",
+  ].join("\n");
 }
