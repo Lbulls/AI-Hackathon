@@ -19,7 +19,7 @@ export function SessionTimeline({
 }) {
   if (sessions.length === 0) {
     return (
-      <p className="rounded-md border border-dashed border-zinc-300 bg-white p-6 text-center text-sm text-zinc-500">
+      <p className="paper-card rounded-lg p-6 text-center text-sm text-[#6f6a5f]">
         No sessions on record yet. Add today&apos;s session to get started.
       </p>
     );
@@ -33,54 +33,54 @@ export function SessionTimeline({
         return (
           <li
             key={s.id}
-            className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm"
+            className="paper-card rounded-lg p-5 pl-9"
           >
             <div className="mb-3 flex items-baseline justify-between gap-3">
               <div className="flex items-baseline gap-2">
-                <h3 className="text-sm font-semibold text-zinc-900">
+                <h3 className="text-sm font-bold text-[#233044]">
                   {relativeDay(s.date)}
                 </h3>
                 {isDraft && (
-                  <span className="rounded bg-zinc-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-600">
+                  <span className="notebook-tab rounded px-2 py-0.5 text-[10px] font-bold uppercase text-[#6f6a5f]">
                     Draft — no lesson generated
                   </span>
                 )}
               </div>
-              <span className="text-xs text-zinc-500">
+              <span className="text-xs text-[#6f6a5f]">
                 {formatDateLong(s.date)}
               </span>
             </div>
 
             <dl className="grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
               <div>
-                <dt className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                <dt className="text-xs font-black uppercase text-[#6f6a5f]">
                   Skills targeted
                 </dt>
-                <dd className="mt-1 text-zinc-800">
+                <dd className="mt-1 text-[#233044]">
                   {s.notes.targetPattern || "—"}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                <dt className="text-xs font-black uppercase text-[#6f6a5f]">
                   Teacher notes
                 </dt>
-                <dd className="mt-1 whitespace-pre-wrap text-zinc-800">
+                <dd className="mt-1 whitespace-pre-wrap text-[#233044]">
                   {s.notes.notes || "—"}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                <dt className="text-xs font-black uppercase text-[#6f6a5f]">
                   Strengths
                 </dt>
-                <dd className="mt-1 text-zinc-800">
+                <dd className="mt-1 text-[#233044]">
                   {s.notes.strengths || "—"}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                <dt className="text-xs font-black uppercase text-[#6f6a5f]">
                   Struggles
                 </dt>
-                <dd className="mt-1 text-zinc-800">
+                <dd className="mt-1 text-[#233044]">
                   {s.notes.struggles || "—"}
                 </dd>
               </div>
@@ -92,7 +92,7 @@ export function SessionTimeline({
                   type="button"
                   onClick={() => onGenerateForSession(s.id)}
                   disabled={isGenerating}
-                  className="rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="ink-button rounded-md px-3 py-1.5 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {isGenerating ? "Drafting materials…" : "Generate lesson now"}
                 </button>
@@ -131,13 +131,13 @@ function LessonDetails({
   }
 
   return (
-    <details className="mt-4 rounded-md border border-zinc-200 bg-zinc-50 p-3">
-      <summary className="cursor-pointer text-xs font-semibold uppercase tracking-wide text-zinc-500">
+    <details className="mt-4 rounded-md border border-[#d8c8a4] bg-[#fff8dc]/70 p-3">
+      <summary className="cursor-pointer text-xs font-black uppercase text-[#6f6a5f]">
         Drafted lesson materials
       </summary>
 
       {!isEditing && (
-        <div className="mt-3 space-y-3 text-sm text-zinc-800">
+        <div className="mt-3 space-y-3 text-sm text-[#233044]">
           <p>
             <span className="font-semibold">Need: </span>
             {lesson.needSummary}
@@ -158,25 +158,25 @@ function LessonDetails({
             {lesson.targetWords.join(", ")}
           </p>
           {lesson.reviewNote && (
-            <p className="whitespace-pre-wrap text-zinc-700">
+            <p className="whitespace-pre-wrap text-[#233044]">
               <span className="font-semibold">Review note: </span>
               {lesson.reviewNote}
             </p>
           )}
           {lesson.productiveStrugglePlan && (
-            <div className="rounded-md border border-blue-100 bg-blue-50 p-3">
-              <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-blue-900">
+            <div className="rounded-md border border-[#7aa8c8]/30 bg-[#eef7fb] p-3">
+              <p className="mb-1 text-xs font-black uppercase text-[#315b74]">
                 Next lesson productive struggle plan
               </p>
-              <p className="whitespace-pre-wrap text-sm text-blue-950">
+              <p className="whitespace-pre-wrap text-sm text-[#233044]">
                 {lesson.productiveStrugglePlan}
               </p>
             </div>
           )}
           {lesson.bookRecommendations &&
             lesson.bookRecommendations.length > 0 && (
-              <div className="rounded-md border border-emerald-200 bg-emerald-50 p-3">
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-emerald-900">
+              <div className="rounded-md border border-[#5f8f79]/30 bg-[#edf7ef] p-3">
+                <p className="mb-2 text-xs font-black uppercase text-[#315c4a]">
                   Library matches
                 </p>
                 <ol className="space-y-2">
@@ -186,13 +186,13 @@ function LessonDetails({
                         <span className="font-semibold">
                           {book.title}
                         </span>
-                        <span className="text-xs font-semibold text-emerald-800">
+                        <span className="text-xs font-semibold text-[#315c4a]">
                           {book.matchPercent}% match
                         </span>
                       </div>
-                      <p className="text-xs text-zinc-600">by {book.author}</p>
+                      <p className="text-xs text-[#6f6a5f]">by {book.author}</p>
                       <p className="mt-1 text-sm">{book.suggestion}</p>
-                      <p className="mt-1 text-xs text-emerald-900">
+                      <p className="mt-1 text-xs text-[#315c4a]">
                         {book.productiveStruggleNote}
                       </p>
                     </li>
@@ -207,7 +207,7 @@ function LessonDetails({
                 setDraft(lesson);
                 setIsEditing(true);
               }}
-              className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-zinc-50"
+              className="pencil-button rounded-md px-3 py-1.5 text-xs font-semibold"
             >
               Edit drafted lesson
             </button>
@@ -222,7 +222,7 @@ function LessonDetails({
             <button
               type="button"
               onClick={saveEdits}
-              className="rounded-md bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-700"
+              className="ink-button rounded-md px-3 py-1.5 text-xs font-semibold"
             >
               Save lesson updates
             </button>
@@ -232,7 +232,7 @@ function LessonDetails({
                 setDraft(lesson);
                 setIsEditing(false);
               }}
-              className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-zinc-50"
+              className="pencil-button rounded-md px-3 py-1.5 text-xs font-semibold"
             >
               Cancel
             </button>

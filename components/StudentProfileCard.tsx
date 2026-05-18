@@ -31,16 +31,16 @@ export function StudentProfileCard({
 
   if (!isEditing) {
     return (
-      <section className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
+      <section className="paper-card rounded-lg p-6 pl-10">
         <div className="mb-4 flex items-start justify-between">
           <div>
-            <h2 className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+            <h2 className="text-xs font-black uppercase text-[#6f6a5f]">
               Student profile
             </h2>
-            <p className="mt-2 text-xl font-semibold text-zinc-900">
+            <p className="mt-2 text-xl font-black text-[#233044]">
               {profile.name}
             </p>
-            <p className="text-sm text-zinc-600">
+            <p className="text-sm text-[#6f6a5f]">
               Grade {profile.grade} · Lessons at{" "}
               {formatTimePretty(profile.scheduledTime)}
             </p>
@@ -48,7 +48,7 @@ export function StudentProfileCard({
           <button
             type="button"
             onClick={startEdit}
-            className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-zinc-50"
+            className="pencil-button rounded-md px-3 py-1.5 text-xs font-semibold"
           >
             Edit profile
           </button>
@@ -56,16 +56,16 @@ export function StudentProfileCard({
 
         <dl className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
           <div>
-            <dt className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+            <dt className="text-xs font-black uppercase text-[#6f6a5f]">
               Interests
             </dt>
-            <dd className="mt-1 text-zinc-800">{profile.interests || "—"}</dd>
+            <dd className="mt-1 text-[#233044]">{profile.interests || "—"}</dd>
           </div>
           <div>
-            <dt className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+            <dt className="text-xs font-black uppercase text-[#6f6a5f]">
               Important context
             </dt>
-            <dd className="mt-1 whitespace-pre-wrap text-zinc-800">
+            <dd className="mt-1 whitespace-pre-wrap text-[#233044]">
               {profile.context || "—"}
             </dd>
           </div>
@@ -75,8 +75,8 @@ export function StudentProfileCard({
   }
 
   return (
-    <section className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
-      <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+    <section className="paper-card rounded-lg p-6 pl-10">
+      <h2 className="mb-4 text-xs font-black uppercase text-[#6f6a5f]">
         Edit profile
       </h2>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -85,7 +85,7 @@ export function StudentProfileCard({
             type="text"
             value={draft.name}
             onChange={(e) => setDraft({ ...draft, name: e.target.value })}
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="field-paper w-full rounded-md px-3 py-2 text-sm"
           />
         </Field>
         <Field label="Grade">
@@ -93,7 +93,7 @@ export function StudentProfileCard({
             type="text"
             value={draft.grade}
             onChange={(e) => setDraft({ ...draft, grade: e.target.value })}
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="field-paper w-full rounded-md px-3 py-2 text-sm"
           />
         </Field>
         <Field label="Lesson time (24h, e.g. 09:30)">
@@ -103,7 +103,7 @@ export function StudentProfileCard({
             onChange={(e) =>
               setDraft({ ...draft, scheduledTime: e.target.value })
             }
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="field-paper w-full rounded-md px-3 py-2 text-sm"
           />
         </Field>
         <Field label="Interests">
@@ -113,7 +113,7 @@ export function StudentProfileCard({
             onChange={(e) =>
               setDraft({ ...draft, interests: e.target.value })
             }
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="field-paper w-full rounded-md px-3 py-2 text-sm"
           />
         </Field>
         <div className="md:col-span-2">
@@ -124,7 +124,7 @@ export function StudentProfileCard({
                 setDraft({ ...draft, context: e.target.value })
               }
               rows={3}
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+              className="field-paper w-full rounded-md px-3 py-2 text-sm"
             />
           </Field>
         </div>
@@ -133,14 +133,14 @@ export function StudentProfileCard({
         <button
           type="button"
           onClick={save}
-          className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
+          className="ink-button rounded-md px-4 py-2 text-sm font-semibold"
         >
           Save changes
         </button>
         <button
           type="button"
           onClick={cancel}
-          className="rounded-md border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+          className="pencil-button rounded-md px-4 py-2 text-sm font-semibold"
         >
           Cancel
         </button>
@@ -158,7 +158,7 @@ function Field({
 }) {
   return (
     <div>
-      <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-zinc-500">
+      <label className="mb-1 block text-xs font-black uppercase text-[#6f6a5f]">
         {label}
       </label>
       {children}

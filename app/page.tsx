@@ -55,10 +55,10 @@ export default function Home() {
         <main className="flex-1 space-y-5">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
+              <h1 className="text-2xl font-black text-[#233044]">
                 Planning week
               </h1>
-              <p className="mt-1 text-sm text-zinc-600">
+              <p className="mt-1 text-sm text-[#6f6a5f]">
                 {formatDateLong(today)}
               </p>
             </div>
@@ -73,20 +73,20 @@ export default function Home() {
                   resetToSeed();
                 }
               }}
-              className="text-xs text-zinc-500 underline-offset-2 hover:text-zinc-700 hover:underline"
+              className="notebook-tab rounded-full px-3 py-1.5 text-xs font-semibold text-[#6f6a5f] hover:text-[#233044]"
             >
               Reset demo data
             </button>
           </div>
 
           {nextPrepItems.length > 0 && (
-            <div className="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            <div className="rounded-lg border border-[#d89b35]/35 bg-[#fff4cf] px-4 py-3 text-sm text-[#624114] shadow-sm">
               <div className="font-semibold">
                 {nextPrepItems.length} lesson plan
                 {nextPrepItems.length === 1 ? "" : "s"} need attention before{" "}
                 {dayLabel(nextDay)}, {formatDateShort(nextDay)}
               </div>
-              <ul className="mt-1 list-inside list-disc text-xs text-amber-800">
+              <ul className="mt-1 list-inside list-disc text-xs text-[#7b531c]">
                 {nextPrepItems.slice(0, 4).map((p) => (
                   <li key={p.session.id}>
                     {p.student.name}: {p.status.toLowerCase()} for{" "}
@@ -101,7 +101,7 @@ export default function Home() {
           )}
 
           {nextPrepItems.length === 0 && allUnapprovedPlans.length > 0 && (
-            <div className="rounded-md border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-700">
+            <div className="paper-card rounded-lg px-6 py-4 text-sm text-[#233044]">
               <span className="font-medium">{allUnapprovedPlans.length}</span>{" "}
               lesson plan
               {allUnapprovedPlans.length === 1 ? "" : "s"} awaiting sign-off.
@@ -110,7 +110,7 @@ export default function Home() {
           )}
 
           {nextPrepItems.length === 0 && allUnapprovedPlans.length === 0 && (
-            <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
+            <div className="rounded-lg border border-[#5f8f79]/35 bg-[#edf7ef] px-4 py-3 text-sm text-[#315c4a] shadow-sm">
               Plans tied to existing running records are signed off. The next
               scheduled session is {dayLabel(nextDay)}, {formatDateShort(nextDay)}.
             </div>
@@ -126,7 +126,7 @@ export default function Home() {
               }
             />
           ) : (
-            <div className="rounded-lg border border-zinc-200 bg-white p-6 text-sm text-zinc-500 shadow-sm">
+            <div className="paper-card rounded-lg p-6 text-sm text-[#6f6a5f]">
               Loading...
             </div>
           )}

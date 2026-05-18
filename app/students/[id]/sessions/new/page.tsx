@@ -38,7 +38,7 @@ export default function NewSessionPage({
       <>
         <AppHeader crumbs={[{ label: "…" }]} />
         <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-8">
-          <p className="text-sm text-zinc-500">Loading…</p>
+          <p className="text-sm text-[#6f6a5f]">Loading…</p>
         </main>
       </>
     );
@@ -122,10 +122,10 @@ export default function NewSessionPage({
       />
       <main className="mx-auto w-full max-w-5xl flex-1 space-y-6 px-6 py-8">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
+          <h1 className="text-2xl font-black text-[#233044]">
             New session — {student.name}
           </h1>
-          <p className="mt-1 text-sm text-zinc-600">
+          <p className="mt-1 text-sm text-[#6f6a5f]">
             Session date: {formatDateLong(sessionDate)} ·{" "}
             Grade {student.grade} · interests: {student.interests} ·{" "}
             {student.sessions.length} prior session
@@ -143,15 +143,15 @@ export default function NewSessionPage({
         />
 
         {error && (
-          <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+            <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
             Something went wrong: {error}
           </div>
         )}
 
         {result?.usedFallback && (
-          <div className="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          <div className="rounded-lg border border-[#d89b35]/35 bg-[#fff4cf] px-4 py-3 text-sm text-[#624114]">
             Showing sample output — live generation unavailable. Check the
-            <code className="mx-1 rounded bg-amber-100 px-1 font-mono text-xs">
+            <code className="mx-1 rounded bg-[#ffe9a8] px-1 font-mono text-xs">
               ANTHROPIC_API_KEY
             </code>
             env var.
@@ -160,12 +160,12 @@ export default function NewSessionPage({
 
         {result && editableLesson && (
           <section className="space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="paper-card flex flex-wrap items-center justify-between gap-3 rounded-lg p-5 pl-9">
               <div>
-                <h2 className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                <h2 className="text-xs font-black uppercase text-[#6f6a5f]">
                   Editable drafted lesson materials
                 </h2>
-                <p className="mt-1 text-xs text-zinc-500">
+                <p className="mt-1 text-xs text-[#6f6a5f]">
                   Edit any generated field below before saving. These edits are
                   what get stored in the running record.
                 </p>
@@ -173,7 +173,7 @@ export default function NewSessionPage({
               <button
                 type="button"
                 onClick={saveWithLesson}
-                className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700"
+                className="ink-button rounded-md px-4 py-2 text-sm font-semibold"
               >
                 Save to running record
               </button>

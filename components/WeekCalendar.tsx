@@ -28,11 +28,11 @@ export function WeekCalendar({
   ) => void;
 }) {
   return (
-    <div className="overflow-x-auto rounded-lg border border-zinc-200 bg-white shadow-sm">
+    <div className="paper-card overflow-x-auto rounded-lg pl-5">
       <table className="w-full min-w-[980px] text-sm">
         <thead>
-          <tr className="border-b border-zinc-200 bg-zinc-50">
-            <th className="w-40 px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-zinc-500">
+          <tr className="border-b border-[#d8c8a4] bg-[#fff8dc]/80">
+            <th className="w-40 px-3 py-2 text-left text-xs font-black uppercase text-[#6f6a5f]">
               Daily block
             </th>
             {week.map((d) => {
@@ -40,14 +40,14 @@ export function WeekCalendar({
               return (
                 <th
                   key={d}
-                  className={`min-w-40 px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide ${
+                  className={`min-w-40 px-3 py-2 text-left text-xs font-semibold uppercase ${
                     isTodayCol
-                      ? "bg-emerald-50 text-emerald-800"
-                      : "text-zinc-500"
+                      ? "bg-[#edf7ef] text-[#315c4a]"
+                      : "text-[#6f6a5f]"
                   }`}
                 >
                   {dayLabel(d)}{" "}
-                  <span className="font-normal text-zinc-500">
+                  <span className="font-normal text-[#6f6a5f]">
                     {formatDateShort(d)}
                   </span>
                 </th>
@@ -57,16 +57,16 @@ export function WeekCalendar({
         </thead>
         <tbody>
           {students.map((s) => (
-            <tr key={s.id} className="border-b border-zinc-100 last:border-b-0">
+            <tr key={s.id} className="border-b border-[#eadfbd] last:border-b-0">
               <td className="px-3 py-3 align-top">
                 <Link
                   href={`/students/${s.id}`}
-                  className="block rounded-md px-2 py-1 hover:bg-zinc-50"
+                  className="block rounded-md px-2 py-1 hover:bg-[#fff8dc]"
                 >
-                  <div className="text-sm font-medium text-zinc-900">
+                  <div className="text-sm font-bold text-[#233044]">
                     {s.name}
                   </div>
-                  <div className="text-xs text-zinc-500">
+                  <div className="text-xs text-[#6f6a5f]">
                     {formatTime(s.scheduledTime)}
                   </div>
                 </Link>
@@ -75,7 +75,7 @@ export function WeekCalendar({
                 <td
                   key={d}
                   className={`px-3 py-3 align-top ${
-                    d === today ? "bg-emerald-50/40" : ""
+                    d === today ? "bg-[#edf7ef]/60" : ""
                   }`}
                 >
                   <DayCell
@@ -110,7 +110,7 @@ function DayCell({
   ) => void;
 }) {
   if (!isWeekday(date)) {
-    return <span className="text-xs text-zinc-300">No lesson block</span>;
+    return <span className="text-xs text-[#c8b990]">No lesson block</span>;
   }
 
   const currentSession = student.sessions.find((session) => session.date === date);
@@ -125,7 +125,7 @@ function DayCell({
   if (isPast) {
     return (
       <div className="space-y-1 text-xs">
-        <div className="font-medium text-zinc-700">
+        <div className="font-medium text-[#233044]">
           {currentSession ? "Record logged" : "No record"}
         </div>
         {currentSession?.lesson && (
@@ -144,10 +144,10 @@ function DayCell({
     if (!currentSession) {
       return (
         <div className="space-y-2 text-xs">
-          <div className="text-zinc-600">Session scheduled</div>
+          <div className="text-[#6f6a5f]">Session scheduled</div>
           <Link
             href={`/students/${student.id}/sessions/new`}
-            className="inline-block rounded-md border border-zinc-300 bg-white px-2 py-1 font-medium text-zinc-700 hover:bg-zinc-50"
+            className="pencil-button inline-block rounded-md px-2 py-1 font-medium"
           >
             Open record
           </Link>
@@ -157,7 +157,7 @@ function DayCell({
 
     return (
       <div className="space-y-1.5 text-xs">
-        <div className="font-medium text-emerald-700">Notes logged</div>
+        <div className="font-medium text-[#315c4a]">Notes logged</div>
         {currentSession.lesson ? (
           <PlanApproval
             studentId={student.id}
@@ -168,7 +168,7 @@ function DayCell({
         ) : (
           <Link
             href={`/students/${student.id}`}
-            className="font-medium text-amber-700 underline-offset-2 hover:underline"
+            className="font-medium text-[#9a5d15] underline-offset-2 hover:underline"
           >
             Generate next plan
           </Link>
@@ -182,8 +182,8 @@ function DayCell({
       <div
         className={
           date === nextSessionDate
-            ? "font-semibold text-zinc-900"
-            : "font-medium text-zinc-700"
+            ? "font-semibold text-[#233044]"
+            : "font-medium text-[#6f6a5f]"
         }
       >
         {date === nextSessionDate ? "Following session" : "Scheduled"}
@@ -198,12 +198,12 @@ function DayCell({
       ) : priorPrepSession ? (
         <Link
           href={`/students/${student.id}`}
-          className="font-medium text-amber-700 underline-offset-2 hover:underline"
+          className="font-medium text-[#9a5d15] underline-offset-2 hover:underline"
         >
           Needs generated plan
         </Link>
       ) : (
-        <div className="text-zinc-400">
+        <div className="text-[#9c9075]">
           Prep after {dayLabel(priorPrepDate)}
         </div>
       )}
@@ -236,9 +236,9 @@ function PlanApproval({
         onChange={(e) =>
           onToggleApprove(studentId, session.id, e.target.checked)
         }
-        className="mt-0.5 h-3.5 w-3.5 cursor-pointer rounded border-zinc-400 text-emerald-600 focus:ring-emerald-500"
+        className="mt-0.5 h-3.5 w-3.5 cursor-pointer rounded border-[#9c9075] text-[#5f8f79] focus:ring-[#5f8f79]"
       />
-      <span className={approved ? "text-emerald-700" : "font-medium text-amber-700"}>
+      <span className={approved ? "text-[#315c4a]" : "font-medium text-[#9a5d15]"}>
         {approved ? "Signed off" : label}
       </span>
     </label>

@@ -12,12 +12,12 @@ function Card({
 }) {
   return (
     <section
-      className={`rounded-lg border border-zinc-200 bg-white p-5 shadow-sm ${className}`}
+      className={`paper-card rounded-lg p-5 pl-9 ${className}`}
     >
-      <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+      <h2 className="mb-2 text-xs font-black uppercase text-[#6f6a5f]">
         {title}
       </h2>
-      <div className="text-sm text-zinc-800">{children}</div>
+      <div className="text-sm text-[#233044]">{children}</div>
     </section>
   );
 }
@@ -45,7 +45,7 @@ export function LessonCards({ output }: { output: LessonOutput }) {
           {output.targetWords.map((w) => (
             <li
               key={w}
-              className="rounded bg-yellow-100 px-2 py-1 text-xs font-medium text-zinc-800"
+              className="rounded bg-[#fff4cf] px-2 py-1 text-xs font-semibold text-[#624114]"
             >
               {w}
             </li>
@@ -72,15 +72,15 @@ export function LessonCards({ output }: { output: LessonOutput }) {
               <li key={book.bookId}>
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <div>
-                    <p className="font-semibold text-zinc-900">{book.title}</p>
-                    <p className="text-xs text-zinc-500">by {book.author}</p>
+                    <p className="font-bold text-[#233044]">{book.title}</p>
+                    <p className="text-xs text-[#6f6a5f]">by {book.author}</p>
                   </div>
-                  <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
+                  <span className="rounded-full bg-[#dff0e4] px-3 py-1 text-xs font-bold text-[#315c4a]">
                     {book.matchPercent}% match
                   </span>
                 </div>
                 <p className="mt-2 leading-6">{book.suggestion}</p>
-                <p className="mt-1 text-xs leading-5 text-emerald-900">
+                <p className="mt-1 text-xs leading-5 text-[#315c4a]">
                   {book.productiveStruggleNote}
                 </p>
               </li>

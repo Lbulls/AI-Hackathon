@@ -21,7 +21,7 @@ function Field({
     <div>
       <label
         htmlFor={id}
-        className="mb-1 block text-xs font-semibold uppercase tracking-wide text-zinc-500"
+        className="mb-1 block text-xs font-black uppercase text-[#6f6a5f]"
       >
         {label}
       </label>
@@ -30,7 +30,7 @@ function Field({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         rows={rows}
-        className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm leading-6 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
+        className="field-paper w-full rounded-md px-3 py-2 text-sm leading-6 outline-none focus:border-[#7aa8c8] focus:ring-1 focus:ring-[#7aa8c8]"
       />
     </div>
   );
@@ -63,7 +63,7 @@ export function EditableLessonMaterials({
   }
 
   return (
-    <div className="space-y-4 rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
+    <div className="paper-card space-y-4 rounded-lg p-6 pl-10">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Field
           id="needSummary"
@@ -90,7 +90,7 @@ export function EditableLessonMaterials({
       <div>
         <label
           htmlFor="targetWords"
-          className="mb-1 block text-xs font-semibold uppercase tracking-wide text-zinc-500"
+          className="mb-1 block text-xs font-black uppercase text-[#6f6a5f]"
         >
           Target words
         </label>
@@ -108,9 +108,9 @@ export function EditableLessonMaterials({
             )
           }
           placeholder="sit, big, hid, pin"
-          className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
+          className="field-paper w-full rounded-md px-3 py-2 text-sm outline-none focus:border-[#7aa8c8] focus:ring-1 focus:ring-[#7aa8c8]"
         />
-        <p className="mt-1 text-xs text-zinc-500">
+        <p className="mt-1 text-xs text-[#6f6a5f]">
           Separate words with commas. These words are highlighted in the story
           preview.
         </p>
@@ -132,20 +132,20 @@ export function EditableLessonMaterials({
         onChange={(next) => patch("productiveStrugglePlan", next)}
       />
 
-      <div className="rounded-md border border-yellow-200 bg-yellow-50 p-3">
-        <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-yellow-800">
+      <div className="rounded-md border border-[#d89b35]/30 bg-[#fff4cf] p-3">
+        <div className="mb-2 text-xs font-black uppercase text-[#7b531c]">
           Highlight preview
         </div>
         <HighlightedStory story={value.miniStory} targetWords={previewWords} />
       </div>
 
       {value.bookRecommendations && value.bookRecommendations.length > 0 && (
-        <div className="space-y-3 rounded-lg border border-emerald-200 bg-emerald-50 p-4">
+        <div className="space-y-3 rounded-lg border border-[#5f8f79]/30 bg-[#edf7ef] p-4">
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-emerald-900">
+            <h3 className="text-xs font-black uppercase text-[#315c4a]">
               Library book matches
             </h3>
-            <p className="mt-1 text-xs text-emerald-800">
+            <p className="mt-1 text-xs text-[#315c4a]">
               These recommendations are scored against the student&apos;s skills,
               target words, notes, and interests. Edit the teacher-facing
               guidance before saving if needed.
@@ -155,16 +155,16 @@ export function EditableLessonMaterials({
           {value.bookRecommendations.map((book, index) => (
             <section
               key={book.bookId}
-              className="rounded-md border border-emerald-200 bg-white p-4"
+              className="rounded-md border border-[#5f8f79]/25 bg-[#fffdf6] p-4"
             >
               <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <h4 className="text-sm font-semibold text-zinc-900">
+                  <h4 className="text-sm font-bold text-[#233044]">
                     {index + 1}. {book.title}
                   </h4>
-                  <p className="text-xs text-zinc-500">by {book.author}</p>
+                  <p className="text-xs text-[#6f6a5f]">by {book.author}</p>
                 </div>
-                <div className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
+                <div className="rounded-full bg-[#dff0e4] px-3 py-1 text-xs font-bold text-[#315c4a]">
                   {book.matchPercent}% match
                 </div>
               </div>
@@ -204,7 +204,7 @@ export function EditableLessonMaterials({
 function TagList({ label, values }: { label: string; values: string[] }) {
   return (
     <div>
-      <div className="mb-1 font-semibold uppercase tracking-wide text-zinc-500">
+      <div className="mb-1 font-black uppercase text-[#6f6a5f]">
         {label}
       </div>
       <div className="flex flex-wrap gap-1">
@@ -212,13 +212,13 @@ function TagList({ label, values }: { label: string; values: string[] }) {
           values.map((value) => (
             <span
               key={value}
-              className="rounded bg-zinc-100 px-2 py-0.5 text-zinc-700"
+              className="rounded bg-[#fff4cf] px-2 py-0.5 text-[#624114]"
             >
               {value}
             </span>
           ))
         ) : (
-          <span className="text-zinc-400">No direct tag match</span>
+          <span className="text-[#9c9075]">No direct tag match</span>
         )}
       </div>
     </div>

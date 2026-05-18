@@ -107,12 +107,12 @@ export function SessionForm({
   return (
     <form
       onSubmit={handleGenerate}
-      className="space-y-4 rounded-lg border border-zinc-200 bg-white p-6 shadow-sm"
+      className="paper-card space-y-4 rounded-lg p-6 pl-10"
     >
       <div>
         <label
           htmlFor="targetPattern"
-          className="mb-1 block text-xs font-semibold uppercase tracking-wide text-zinc-500"
+          className="mb-1 block text-xs font-black uppercase text-[#6f6a5f]"
         >
           Skills being Targeted
         </label>
@@ -122,14 +122,14 @@ export function SessionForm({
           value={values.targetPattern}
           onChange={(e) => update("targetPattern", e.target.value)}
           placeholder="e.g. Short-i CVC words"
-          className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+          className="field-paper w-full rounded-md px-3 py-2 text-sm"
         />
       </div>
 
       <div>
         <label
           htmlFor="notes"
-          className="mb-1 block text-xs font-semibold uppercase tracking-wide text-zinc-500"
+          className="mb-1 block text-xs font-black uppercase text-[#6f6a5f]"
         >
           Teacher Notes <span className="text-red-600">*</span>
         </label>
@@ -139,13 +139,13 @@ export function SessionForm({
           onChange={(e) => update("notes", e.target.value)}
           placeholder="Enter your detailed notes from today's session — observations, prompts you used, what worked, what didn't, running record level, accuracy, anything you'd want a colleague to know."
           rows={7}
-          className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm leading-6"
+          className="field-paper w-full rounded-md px-3 py-2 text-sm leading-6"
         />
 
-        <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-zinc-600">
+        <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-[#6f6a5f]">
           <label
             htmlFor="attachment"
-            className="cursor-pointer rounded-md border border-zinc-300 bg-white px-3 py-1.5 font-medium text-zinc-700 hover:bg-zinc-50"
+            className="pencil-button cursor-pointer rounded-md px-3 py-1.5 font-semibold"
           >
             Upload notes file
           </label>
@@ -161,17 +161,17 @@ export function SessionForm({
         </div>
 
         {attachment && (
-          <div className="mt-2 flex items-center justify-between rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-900">
+          <div className="mt-2 flex items-center justify-between rounded-md border border-[#5f8f79]/30 bg-[#edf7ef] px-3 py-2 text-xs text-[#315c4a]">
             <span>
               <span className="font-semibold">{attachment.name}</span>{" "}
-              <span className="text-emerald-700">
+              <span className="text-[#315c4a]">
                 ({(attachment.size / 1024).toFixed(0)} KB)
               </span>
             </span>
             <button
               type="button"
               onClick={clearFile}
-              className="text-emerald-800 underline-offset-2 hover:underline"
+              className="text-[#315c4a] underline-offset-2 hover:underline"
             >
               Remove
             </button>
@@ -179,7 +179,7 @@ export function SessionForm({
         )}
 
         {!attachment && initialAttachmentName && (
-          <div className="mt-2 text-xs text-zinc-500">
+          <div className="mt-2 text-xs text-[#6f6a5f]">
             Previously attached: {initialAttachmentName} (re-upload to include)
           </div>
         )}
@@ -192,7 +192,7 @@ export function SessionForm({
       <div>
         <label
           htmlFor="strengths"
-          className="mb-1 block text-xs font-semibold uppercase tracking-wide text-zinc-500"
+          className="mb-1 block text-xs font-black uppercase text-[#6f6a5f]"
         >
           Strengths observed today
         </label>
@@ -202,14 +202,14 @@ export function SessionForm({
           value={values.strengths}
           onChange={(e) => update("strengths", e.target.value)}
           placeholder="One quick line — what went well?"
-          className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+          className="field-paper w-full rounded-md px-3 py-2 text-sm"
         />
       </div>
 
       <div>
         <label
           htmlFor="struggles"
-          className="mb-1 block text-xs font-semibold uppercase tracking-wide text-zinc-500"
+          className="mb-1 block text-xs font-black uppercase text-[#6f6a5f]"
         >
           Struggles observed today
         </label>
@@ -219,7 +219,7 @@ export function SessionForm({
           value={values.struggles}
           onChange={(e) => update("struggles", e.target.value)}
           placeholder="One quick line — where did the student get stuck?"
-          className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+          className="field-paper w-full rounded-md px-3 py-2 text-sm"
         />
       </div>
 
@@ -233,7 +233,7 @@ export function SessionForm({
         <button
           type="submit"
           disabled={isLoading}
-          className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+          className="ink-button rounded-md px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isLoading
             ? "Drafting materials…"
@@ -245,11 +245,11 @@ export function SessionForm({
           type="button"
           onClick={handleSaveDraft}
           disabled={isLoading}
-          className="rounded-md border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-50"
+          className="pencil-button rounded-md px-4 py-2 text-sm font-semibold disabled:opacity-50"
         >
           Save without generating
         </button>
-        <span className="text-xs text-zinc-500">
+        <span className="text-xs text-[#6f6a5f]">
           Drafts can be opened and generated from later.
         </span>
       </div>

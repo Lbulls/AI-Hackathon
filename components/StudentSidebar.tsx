@@ -49,24 +49,26 @@ export function StudentSidebar({
 
   return (
     <aside className="w-64 shrink-0">
-      <div className="sticky top-6 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm">
+      <div className="paper-card sticky top-6 rounded-lg p-5 pl-8">
         <div className="mb-3 flex items-baseline justify-between">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
-            Students
+          <h2 className="text-xs font-black uppercase text-[#6f6a5f]">
+            Student tabs
           </h2>
-          <span className="text-xs text-zinc-500">{students.length}</span>
+          <span className="notebook-tab rounded-full px-2 py-0.5 text-xs text-[#6f6a5f]">
+            {students.length}
+          </span>
         </div>
         <input
           type="search"
           placeholder="Search by name, grade, interest…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full rounded-md border border-zinc-300 px-3 py-1.5 text-sm outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
+          className="field-paper w-full rounded-md px-3 py-1.5 text-sm outline-none focus:border-[#7aa8c8] focus:ring-1 focus:ring-[#7aa8c8]"
         />
 
         <ul className="mt-3 max-h-[60vh] space-y-0.5 overflow-y-auto">
           {filtered.length === 0 && (
-            <li className="px-2 py-2 text-xs text-zinc-500">No matches</li>
+            <li className="px-2 py-2 text-xs text-[#6f6a5f]">No matches</li>
           )}
           {filtered.map((s) => {
             const next = nextSessionLabel(s, today);
@@ -74,12 +76,12 @@ export function StudentSidebar({
               <li key={s.id}>
                 <Link
                   href={`/students/${s.id}`}
-                  className="block rounded-md px-2 py-2 hover:bg-zinc-50"
+                  className="block rounded-md border border-transparent px-2 py-2 hover:border-[#d89b35]/25 hover:bg-[#fff8dc]"
                 >
-                  <div className="text-sm font-medium text-zinc-900">
+                  <div className="text-sm font-bold text-[#233044]">
                     {s.name}
                   </div>
-                  <div className="text-xs text-zinc-500">
+                  <div className="text-xs text-[#6f6a5f]">
                     Gr {s.grade} · next: {next.label} · {formatTime(s.scheduledTime)}
                   </div>
                 </Link>

@@ -29,7 +29,7 @@ export default function StudentPage({
       <>
         <AppHeader crumbs={[{ label: "…" }]} />
         <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-8">
-          <p className="text-sm text-zinc-500">Loading…</p>
+          <p className="text-sm text-[#6f6a5f]">Loading…</p>
         </main>
       </>
     );
@@ -101,10 +101,10 @@ export default function StudentPage({
         <section>
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+              <h2 className="text-xs font-black uppercase text-[#6f6a5f]">
                 Running record
               </h2>
-              <p className="mt-1 text-sm text-zinc-600">
+              <p className="mt-1 text-sm text-[#6f6a5f]">
                 {sessions.length} session{sessions.length === 1 ? "" : "s"} on record,
                 most recent first.
               </p>
@@ -113,13 +113,13 @@ export default function StudentPage({
               <button
                 type="button"
                 onClick={() => exportRunningRecordPdf(student, sessions)}
-                className="rounded-md border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+                className="pencil-button rounded-md px-4 py-2 text-sm font-semibold"
               >
                 Export Running Record
               </button>
               <Link
                 href={`/students/${student.id}/sessions/new`}
-                className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
+                className="ink-button rounded-md px-4 py-2 text-sm font-semibold"
               >
                 + Add today&apos;s session
               </Link>
